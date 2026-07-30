@@ -6,19 +6,13 @@ import numpy as np
 from art.estimators.classification import PyTorchClassifier
 from art.attacks.evasion import AutoProjectedGradientDescent
 from art.utils import load_mnist
+from CNN import CNN
 
 (x_train, y_train), (x_test, y_test), min_pixel_value, max_pixel_value = load_mnist()
 x_train = np.transpose(x_train, (0, 3, 1, 2)).astype(np.float32)
 x_test = np.transpose(x_test, (0, 3, 1, 2)).astype(np.float32)
 
-model = nn.Sequential(
-    nn.Flatten(),
-    nn.Linear(784, 64),
-    nn.ReLU(),
-    nn.Linear(64, 32),
-    nn.ReLU(),
-    nn.Linear(32, 10)
-)
+model = CNN(in_channels=1, input_size=28, num_classes=10)
 
 optimizer = optim.Adam(model.parameters(), lr=1e-3)  
 loss_fn = nn.CrossEntropyLoss()
@@ -50,7 +44,8 @@ y_combined = np.concatenate([y_train, y_train], axis=0)
 perm = np.random.permutation(len(x_combined))
 x_combined = x_combined[perm]
 y_combined = y_combined[perm]
- 
+
+classifier.optimizer.zero_grad()
 classifier.fit(x_combined, y_combined, batch_size=64, nb_epochs=5)
 
 # Evaluate on both benign and adversarial training data
