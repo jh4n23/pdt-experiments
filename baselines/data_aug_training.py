@@ -6,8 +6,8 @@ import numpy as np
 from art.estimators.classification import PyTorchClassifier
 from art.attacks.evasion import AutoProjectedGradientDescent
 from art.utils import load_mnist
-from cnn import CNN
-from csec_tester import CsecTester
+from utils.cnn import CNN
+from utils.csec_tester import CsecTester
 
 (x_train, y_train), (x_test, y_test), min_pixel_value, max_pixel_value = load_mnist()
 x_train = np.transpose(x_train, (0, 3, 1, 2)).astype(np.float32)

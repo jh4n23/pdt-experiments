@@ -1,7 +1,5 @@
 import numpy as np
 from art.attacks.evasion import AutoProjectedGradientDescent
-from art.estimators.classification import PyTorchClassifier
-
 """ Given a model, a test set and an epsilon value, run APGD attack and print accuracy """
 
 class CsecTester():
