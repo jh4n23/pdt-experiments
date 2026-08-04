@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
  
 class CNN(nn.Module):
-    """CNN: two strided 3x3 convs (4, 8 channels) + FC head -> 10 logits."""
+    """two strided 3x3 convs (4 and 8 channels respectively) + FC head -> 10 logits."""
  
     def __init__(
         self,
@@ -14,11 +14,9 @@ class CNN(nn.Module):
     ):
         super().__init__()
  
-        # Two strided 3x3 conv layers with 4 and 8 channels respectively.
         self.conv1 = nn.Conv2d(in_channels, 4, kernel_size=3, stride=2, padding=1)
         self.conv2 = nn.Conv2d(4, 8, kernel_size=3, stride=2, padding=1)
  
-        # For a 28x28 input: 28 -> 14 -> 7, so flattened size = 8 * 7 * 7
         def conv_out_size(size):
             return (size + 2 * 1 - 3) // 2 + 1
  

@@ -6,7 +6,8 @@ import numpy as np
 from art.estimators.classification import PyTorchClassifier
 from art.attacks.evasion import AutoProjectedGradientDescent, ProjectedGradientDescent
 from art.utils import load_mnist
-from CNN import CNN
+from cnn import CNN
+from csec_tester import CsecTester
 
 (x_train, y_train), (x_test, y_test), min_pixel_value, max_pixel_value = load_mnist()
 x_train = np.transpose(x_train, (0, 3, 1, 2)).astype(np.float32)
@@ -63,15 +64,14 @@ for epoch in range(nb_epochs):
 
     preds = classifier.predict(x_test)
     acc = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
-    print(f"Epoch {epoch + 1}/{nb_epochs} - benign test acc: {acc:.4f}")
+    print(f"\tEpoch {epoch + 1}/{nb_epochs} - benign test acc: {acc:.4f}")
 
-# --- Final evaluation ---
+# Final evaluation
+print("Final evaluation")
 preds = classifier.predict(x_test)
 accuracy = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
-print(f"Final accuracy on benign test data: {accuracy:.4f}")
+print(f"\tBenign accuracy: {accuracy:.4f}")
 
-attack_eval = AutoProjectedGradientDescent(estimator=classifier, eps=0.1)
-x_adv = attack_eval.generate(x=x_test)
-adv_preds = classifier.predict(x_adv)
-adv_accuracy = np.sum(np.argmax(adv_preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
-print(f"Final accuracy on adversarial test data: {adv_accuracy:.4f}")
+tester = CsecTester(model=classifier)
+adv_accuracy = tester.run(x_test, y_test, 0.1)
+print(f"\tAdversarial accuracy: {adv_accuracy:.4f}")

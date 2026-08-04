@@ -6,7 +6,8 @@ import numpy as np
 from art.estimators.classification import PyTorchClassifier
 from art.attacks.evasion import AutoProjectedGradientDescent
 from art.utils import load_mnist
-from CNN import CNN
+from cnn import CNN
+from csec_tester import CsecTester
 
 (x_train, y_train), (x_test, y_test), min_pixel_value, max_pixel_value = load_mnist()
 x_train = np.transpose(x_train, (0, 3, 1, 2)).astype(np.float32)
@@ -30,9 +31,9 @@ print("Initial training stage")
 classifier.fit(x_train, y_train, batch_size=64, nb_epochs=5)
 preds = classifier.predict(x_test)
 accuracy = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test) 
-print(f"Accuracy on benign test data: {accuracy:.4f}")
+print(f"\tBenign accuracy: {accuracy:.4f}")
 
-attack = AutoProjectedGradientDescent(estimator=classifier, eps=0.1)#
+attack = AutoProjectedGradientDescent(estimator=classifier, eps=0.1)
 
 # Generate adv training data, combine with benign, and train new classifier on both sets of data
 print("Second training stage: benign + adversarial test data")
@@ -51,12 +52,9 @@ classifier.fit(x_combined, y_combined, batch_size=64, nb_epochs=5)
 # Evaluate on both benign and adversarial training data
 print("Final evaluation")
 preds = classifier.predict(x_test)
-acc = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
-print(f"Accuracy on benign test data: {acc}")
+benign_accuracy = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
+print(f"\tBenign accuracy: {benign_accuracy}")
 
-
-attack_eval = AutoProjectedGradientDescent(estimator=classifier, eps=0.1)
-x_adv_test = attack_eval.generate(x=x_test)
-adv_preds = classifier.predict(x_adv_test)
-adv_accuracy = np.sum(np.argmax(adv_preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
-print(f"Accuracy on adversarial test data: {adv_accuracy:.4f}")
+tester = CsecTester(model=classifier)
+adv_accuracy = tester.run(x_test, y_test, 0.1)
+print(f"\tAdversarial accuracy: {adv_accuracy:.4f}")
