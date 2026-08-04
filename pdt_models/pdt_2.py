@@ -1,22 +1,21 @@
 import torch
-import onnx
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 import vehicle_lang as vcl
 
-from torch.utils.data import DataLoader, TensorDataset
+from tqdm import tqdm
 from vehicle_lang.loss import pytorch as loss_pt
 from art.estimators.classification import PyTorchClassifier
+from art.attacks.evasion import AutoProjectedGradientDescent, ProjectedGradientDescent
 from art.utils import load_mnist
 from utils.cnn import CNN
 from utils.csec_tester import CsecTester
-from utils.onnx_exporter import OnnxExporter
 
 BATCH_SIZE = 64
-SUBSET_SIZE = 4096
-NUM_EPOCHS = 10
+SUBSET_SIZE = 1024
+NUM_EPOCHS = 5
 
 (x_train, y_train), (x_test, y_test), min_pixel_value, max_pixel_value = load_mnist()
 
@@ -49,16 +48,44 @@ spec = loss_pt.load_specification(
 constraint_loss_fn = spec["robust"]
 loss_fn = nn.CrossEntropyLoss()
 
-train_ds = TensorDataset(
-    torch.from_numpy(x_train),
-    torch.from_numpy(np.argmax(y_train, axis=1)).long(),  # CE wants class indices
+classifier = PyTorchClassifier(
+    model=model,
+    clip_values=(min_pixel_value, max_pixel_value),
+    loss=loss_fn,
+    optimizer=optimizer,
+    input_shape=(1, 28, 28),
+    nb_classes=10,
 )
-train_loader = DataLoader(train_ds, batch_size=BATCH_SIZE, shuffle=True)
+
+train_attack = ProjectedGradientDescent(
+    estimator=classifier,
+    eps=0.1,
+    eps_step=0.01,
+    max_iter=10,
+)
 
 for epoch in range(NUM_EPOCHS):
+    perm = np.random.permutation(SUBSET_SIZE)
+    x_train_shuffled = x_train[perm]
+    y_train_shuffled = y_train[perm]
     cumulative_loss = 0
     lam = None
-    for step, (images, labels) in enumerate(train_loader):
+
+    pbar = tqdm(range(0, SUBSET_SIZE, BATCH_SIZE), desc=f"Epoch {epoch+1}/{NUM_EPOCHS}")
+    for start in pbar:
+        end = start + BATCH_SIZE
+        x_batch = x_train_shuffled[start:end]
+        y_batch = y_train_shuffled[start:end]
+
+        x_batch_adv = train_attack.generate(x=x_batch)
+
+        # Combine benign + adversarial versions of this batch
+        x_batch_combined = np.concatenate([x_batch, x_batch_adv], axis=0)
+        y_batch_combined = np.concatenate([y_batch, y_batch], axis=0)
+
+        images = torch.from_numpy(x_batch_combined)
+        labels = torch.from_numpy(np.argmax(y_batch_combined, axis=1)).long()
+
         optimizer.zero_grad()
         logits = model(images)
         task_loss = loss_fn(logits, labels)
@@ -71,25 +98,18 @@ for epoch in range(NUM_EPOCHS):
             trainingLabels=labels
         )).mean()
 
-        # we only wish to recompute lambda each epoch (as it is expensive)
         if lam is None:
             params = [p for p in model.parameters() if p.requires_grad]
             task_grad_norm = grad_norm(task_loss, params)
             constraint_grad_norm = grad_norm(constraint_loss, params)
             lam = (task_grad_norm / (task_grad_norm + constraint_grad_norm + 1e-8)).item()
 
-        # large lam -> increase constraint_loss weighting, decrease task_loss weighting
         total_loss = (1 - lam) * task_loss + lam * constraint_loss
-        print(
-            f"Step {step + 1}/{SUBSET_SIZE / BATCH_SIZE}: "
-            f"\tTask loss:          {task_loss.item():.4f} "
-            f"\tConstraint loss:    {constraint_loss.item():.4f} "
-            f"\tTotal loss:         {total_loss.item():.4f}"
-        )
 
         cumulative_loss += total_loss.item()
         total_loss.backward()
         optimizer.step()
+        pbar.set_postfix(task_loss=task_loss.item(), constraint_loss=constraint_loss.item(), total_loss=total_loss.item(), lam=lam)
 
     avg_loss = cumulative_loss / (SUBSET_SIZE / BATCH_SIZE)
     print(
@@ -98,22 +118,16 @@ for epoch in range(NUM_EPOCHS):
         f"\tAverage total loss: {avg_loss:.4f}"
     )
 
-classifier = PyTorchClassifier(
-    model=model,
-    clip_values=(min_pixel_value, max_pixel_value),
-    loss=loss_fn,
-    optimizer=optimizer,
-    input_shape=(1, 28, 28),
-    nb_classes=10,
-)
+    preds = classifier.predict(x_test)
+    acc = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
+    print(f"\tEpoch {epoch + 1}/{NUM_EPOCHS} - benign test acc: {acc:.4f}")
 
+# Final evaluation
+print("Final evaluation")
 preds = classifier.predict(x_test)
-accuracy = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test) 
-print(f"Benign accuracy: {accuracy * 100:.1f}%")
+accuracy = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
+print(f"\tBenign accuracy: {accuracy:.4f}")
 
 tester = CsecTester(model=classifier)
 adv_accuracy = tester.run(x_test, y_test, 0.1)
-print(f"Constraint security: {adv_accuracy * 100:.1f}%")
-
-exporter = OnnxExporter(filename="pdt_1", classifier=classifier)
-exporter.export(torch.randn(1, 1, 28, 28))
+print(f"\tAdversarial accuracy: {adv_accuracy:.4f}")
