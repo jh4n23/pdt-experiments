@@ -15,9 +15,10 @@ class CsecTester():
         adv_test = attack.generate(x=x_test)
         return self.model.predict(adv_test)
 
+    # Note: this method assumes y_test is NOT one-hot encoded
     @staticmethod
     def eval(preds, y_test):
-        acc = np.sum(np.argmax(preds, axis=1) == np.argmax(y_test, axis=1)) / len(y_test)
+        acc = np.sum(np.argmax(preds, axis=1) == y_test) / len(y_test)
         return acc
 
     def run(self, x_test, y_test, epsilon):
