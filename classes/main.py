@@ -5,9 +5,9 @@ import torchvision.transforms as transforms
 
 
 from base_classifier import BaseClassifier
-from classes.robust_classifier import RobustClassifier
-from classes.pdt_classifier import PdtClassifier
-from classes.robust_pdt_classifier import RobustPdtClassifier
+from robust_classifier import RobustClassifier
+from pdt_classifier import PdtClassifier
+from robust_pdt_classifier import RobustPdtClassifier
 from utils.cnn import CNN
 from torch.utils.data import DataLoader, Subset
 from utils.csec_tester import CsecTester
