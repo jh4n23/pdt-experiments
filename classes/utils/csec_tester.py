@@ -11,7 +11,7 @@ class CsecTester():
         self.model = model
 
     def attack(self, x_test, epsilon):
-        attack = AutoProjectedGradientDescent(estimator=self.model, eps=epsilon)
+        attack = AutoProjectedGradientDescent(estimator=self.model, eps=epsilon, verbose=False)
         adv_test = attack.generate(x=x_test)
         return self.model.predict(adv_test)
 
