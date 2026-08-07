@@ -1,4 +1,5 @@
 import torch
+import os
 import torch.nn as nn
 import vehicle_lang as vcl
 from base_classifier import BaseClassifier
@@ -8,6 +9,10 @@ from torch.utils.data import DataLoader
 """
 Standard PDT!
 """
+
+_MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
+SPEC_PATH = os.path.join(_MODULE_DIR, "specs", "mnist-robustness.vcl")
+
 class PdtClassifier(BaseClassifier):
     def __init__(self):
         super().__init__()
@@ -20,10 +25,11 @@ class PdtClassifier(BaseClassifier):
         
         return torch.sqrt(sum((g ** 2).sum() for g in grads))
 
-    def get_spec(self, path, logic):
+    @staticmethod
+    def get_spec():
         return loss_pt.load_specification(
-            path,
-            logic=logic
+            SPEC_PATH,
+            logic=vcl.VehicleDifferentiableLogic()
         )
 
     def network(self, x: torch.Tensor) -> torch.Tensor:
@@ -38,10 +44,7 @@ class PdtClassifier(BaseClassifier):
         return lam
 
     def train(self, train_loader: DataLoader, num_epochs: int, batch_size: int):
-        constraint_loss_fn = self.get_spec(
-            "specs/mnist-robustness.vcl",
-            vcl.VehicleDifferentiableLogic(),
-        )["robust"]
+        constraint_loss_fn = self.get_spec()["robust"]
 
         criterion = nn.CrossEntropyLoss()
         for epoch in range(num_epochs):

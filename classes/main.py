@@ -22,7 +22,6 @@ def get_available_cpus():
     except AttributeError:
         num_cpus = os.cpu_count()
     finally:
-        print(f"Allocated {num_cpus} CPUs")
         return num_cpus
 
 def worker(cls_class, train_subset, test_data, num_epochs, batch_size, num_workers, result_queue):

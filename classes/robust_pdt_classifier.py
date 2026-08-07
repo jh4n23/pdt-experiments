@@ -18,10 +18,7 @@ class RobustPdtClassifier(PdtClassifier, RobustClassifier):
         x_train = torch.cat(x_batches).numpy()
         y_train = torch.cat(y_batches).numpy()
 
-        constraint_loss_fn = self.get_spec(
-            "specs/mnist-robustness.vcl",
-            vcl.VehicleDifferentiableLogic(),
-        )["robust"]
+        constraint_loss_fn = self.get_spec()["robust"]
 
         criterion = nn.CrossEntropyLoss()
 
