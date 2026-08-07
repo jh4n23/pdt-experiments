@@ -8,6 +8,4 @@
 
 module load conda
 source activate vehicle_env
-echo "  CONDA_DEFAULT_ENV = $CONDA_DEFAULT_ENV"
-which python
 conda run -n vehicle_env python classes/main.py

@@ -16,7 +16,7 @@ class BaseClassifier():
         criterion = nn.CrossEntropyLoss()
         for epoch in range(num_epochs):
             for images, labels in train_loader:
-                self.optimizer.zero_grad
+                self.optimizer.zero_grad()
                 logits = self.model(images)
                 loss = criterion(logits, labels)
 
