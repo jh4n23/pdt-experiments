@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import vehicle_lang as vcl
 from torch.utils.data import DataLoader
 from pdt_classifier import PdtClassifier
 from robust_classifier import RobustClassifier
@@ -16,6 +17,11 @@ class RobustPdtClassifier(PdtClassifier, RobustClassifier):
             y_batches.append(labels)
         x_train = torch.cat(x_batches).numpy()
         y_train = torch.cat(y_batches).numpy()
+
+        constraint_loss_fn = self.get_spec(
+            "specs/mnist-robustness.vcl",
+            vcl.VehicleDifferentiableLogic(),
+        )["robust"]
 
         criterion = nn.CrossEntropyLoss()
 
@@ -35,7 +41,7 @@ class RobustPdtClassifier(PdtClassifier, RobustClassifier):
                 logits = self.model(images)
                 task_loss = criterion(logits, labels)
 
-                constraint_loss = torch.stack(self.get_constraint_loss_fn(
+                constraint_loss = torch.stack(constraint_loss_fn(
                     n=images.shape[0],
                     classifier=self.network,
                     epsilon=torch.tensor(0.005),

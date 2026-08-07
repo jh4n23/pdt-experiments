@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import vehicle_lang as vcl
 from base_classifier import BaseClassifier
 from vehicle_lang.loss import pytorch as loss_pt
 from torch.utils.data import DataLoader
@@ -19,11 +20,11 @@ class PdtClassifier(BaseClassifier):
         
         return torch.sqrt(sum((g ** 2).sum() for g in grads))
 
-    def get_constraint_loss_fn(self, path, logic, property):
+    def get_spec(self, path, logic):
         return loss_pt.load_specification(
             path,
             logic=logic
-        )[property]
+        )
 
     def network(self, x: torch.Tensor) -> torch.Tensor:
         return self.model(x.reshape(1, 1, 28, 28)).reshape(10)
@@ -37,6 +38,11 @@ class PdtClassifier(BaseClassifier):
         return lam
 
     def train(self, train_loader: DataLoader, num_epochs: int, batch_size: int):
+        constraint_loss_fn = self.get_spec(
+            "specs/mnist-robustness.vcl",
+            vcl.VehicleDifferentiableLogic(),
+        )["robust"]
+
         criterion = nn.CrossEntropyLoss()
         for epoch in range(num_epochs):
             lam = None
@@ -45,7 +51,7 @@ class PdtClassifier(BaseClassifier):
                 logits = self.model(images)
                 task_loss = criterion(logits, labels)
 
-                constraint_loss = torch.stack(self.get_constraint_loss_fn(
+                constraint_loss = torch.stack(constraint_loss_fn(
                     n=images.shape[0],
                     classifier=self.network,
                     epsilon=torch.tensor(0.005),
