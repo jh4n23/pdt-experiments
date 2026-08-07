@@ -9,20 +9,7 @@ from base_classifier import BaseClassifier
 from robust_classifier import RobustClassifier
 from pdt_classifier import PdtClassifier
 from robust_pdt_classifier import RobustPdtClassifier
-from utils.cnn import CNN
 from torch.utils.data import DataLoader, Subset
-from utils.csec_tester import CsecTester
-
-"""
-What should this file do?
-    - Create a BaseClassifier
-    - Create a RobustClassifier
-    - Create a PdtClassifier 
-    - Create a RobustPdtClassifier
-
-    - Train each classifier on the same data
-    - Test each classifier on the same data, reporting accuracy and constraint security
-"""
 
 def worker(cls_class, train_subset, test_data, num_epochs, batch_size, num_workers, result_queue):
     # Cap threads per process to avoid CPU oversubscription

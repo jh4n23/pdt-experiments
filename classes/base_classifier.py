@@ -23,11 +23,6 @@ class BaseClassifier():
                 loss.backward()
                 self.optimizer.step()
 
-            print(
-                f"Epoch: {epoch + 1}, "
-                f"Loss: {loss.item():.4f}"
-            )
-
     def evaluate(self, test_data):
         classifier = PyTorchClassifier(
             model=self.model,
@@ -42,8 +37,10 @@ class BaseClassifier():
 
         preds = classifier.predict(x_test)
         accuracy = np.sum(np.argmax(preds, axis=1) == y_test) / len(y_test)
-        print(f"Benign accuracy: {accuracy * 100:.1f}%")
-
         tester = CsecTester(model=classifier)
         adv_accuracy = tester.run(x_test, y_test, 0.1)
-        print(f"Constraint security: {adv_accuracy * 100:.1f}%")
+        
+        print(f"{self.__class__.__name__}: "
+              f"\tBenign accuracy: {accuracy * 100:.1f}" 
+              f"\tConstraint security: {adv_accuracy * 100:.1f}%"
+        )
