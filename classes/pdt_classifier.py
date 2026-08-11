@@ -11,7 +11,7 @@ Standard PDT!
 """
 
 _MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
-SPEC_PATH = os.path.join(_MODULE_DIR, "specs", "mnist-robustness.vcl")
+SPEC_PATH = os.path.join(_MODULE_DIR, "specs", "robustness-qll.vcl")
 
 class PdtClassifier(BaseClassifier):
     def __init__(self):
@@ -29,7 +29,7 @@ class PdtClassifier(BaseClassifier):
     def get_spec():
         return loss_pt.load_specification(
             SPEC_PATH,
-            logic=vcl.VehicleDifferentiableLogic()
+            logic=vcl.CustomDifferentiableLogic("qllAdditive")
         )
 
     def network(self, x: torch.Tensor) -> torch.Tensor:
