@@ -11,7 +11,7 @@ Standard PDT!
 """
 
 _MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
-SPEC_PATH = os.path.join(_MODULE_DIR, "specs", "robustness-qll.vcl")
+SPEC_PATH = os.path.join(_MODULE_DIR, "specs", "mnist-robustness.vcl")
 
 class PdtClassifier(BaseClassifier):
     def __init__(self):
@@ -35,7 +35,6 @@ class PdtClassifier(BaseClassifier):
     def network(self, x: torch.Tensor) -> torch.Tensor:
         return self.model(x.reshape(1, 1, 28, 28)).reshape(10)
 
-    """ Compute task vs constraint weighting parameter """
     def compute_lam(self, task_loss, constraint_loss):
         params = [p for p in self.model.parameters() if p.requires_grad]
         task_grad_norm = self.grad_norm(task_loss, params)
@@ -59,7 +58,8 @@ class PdtClassifier(BaseClassifier):
                     classifier=self.network,
                     epsilon=torch.tensor(0.005),
                     trainingImages=images.squeeze(1),
-                    trainingLabels=labels
+                    trainingLabels=labels,
+                    p=torch.tensor(5)
                 )).mean()
 
                 if lam is None:

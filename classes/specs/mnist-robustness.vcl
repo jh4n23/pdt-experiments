@@ -38,10 +38,39 @@ trainingImages : Vector Image n
 @dataset
 trainingLabels : Vector Label n
 
+@parameter
+p : Real
+
+qllAdditive : DifferentiableTensorLogic
+qllAdditive =
+  { trueElement                = -infinity
+  , falseElement               = infinity
+  , pointwiseNegation          = \x -> -x
+  , pointwiseConjunction       = \{dims} x y -> (const (1/p) dims) * log(exp(const p dims * x) + exp(const p dims * y))
+  , pointwiseDisjunction       = \{dims} x y -> -(const (1/p) dims) * log(exp(const (-p) dims * x) + exp(const (-p) dims * y))
+  , pointwiseLessThan          = \x y -> x - y
+  , pointwiseLessEqualThan     = \x y -> x - y
+  , pointwiseGreaterThan       = \x y -> y - x
+  , pointwiseGreaterEqualThan  = \x y -> y - x
+  , pointwiseEqual             = \x y -> max (x - y) (y - x)
+  , pointwiseNotEqual          = \x y -> - max (x - y) (y - x)
+  , reduceConjunction          = \{dims} xs -> (1/p) * log(reduceAdd (exp (const p dims * xs)))
+  , reduceDisjunction          = \{dims} xs -> (1/p) * log(reduceAdd (exp (const (-p) dims * xs)))
+  }
+
+-- @property
+-- robustToPerturbation : Bool
+-- robustToPerturbation = 
+--   -- Add a false dependency on the logic to avoid it being removed by monomorphisation.
+--   -- Will fix in the next version of Vehicle.
+--   if qllAdditive.trueElement > 0 
+--     then False 
+--     else advises perturbedImage (label ! 0)
+
 @property
 robust : Vector Bool n
 robust = foreach i . robustAround (trainingImages ! i) (trainingLabels ! i)
 
-@property
-scr : Vector Bool n
-scr = foreach i . scrAround (trainingImages ! i) (trainingLabels ! i)
+-- @property
+-- scr : Vector Bool n
+-- scr = foreach i . scrAround (trainingImages ! i) (trainingLabels ! i)

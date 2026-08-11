@@ -90,8 +90,8 @@ qllAdditive =
 perturbedImage : Image
 
 @property
-robust : Bool
-robust = 
+robustToPerturbation : Bool
+robustToPerturbation = 
   -- Add a false dependency on the logic to avoid it being removed by monomorphisation.
   -- Will fix in the next version of Vehicle.
   if qllAdditive.trueElement > 0 

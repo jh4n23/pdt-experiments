@@ -52,7 +52,8 @@ def main():
 
     test_data = torchvision.datasets.MNIST(root="./data", train=False, download=False, transform=mnist_transform)
         
-    classifier_classes = [BaseClassifier, RobustClassifier, PdtClassifier, RobustPdtClassifier]
+    # classifier_classes = [BaseClassifier, RobustClassifier, PdtClassifier, RobustPdtClassifier]
+    classifier_classes = [PdtClassifier]
     num_workers = len(classifier_classes)
 
     result_queue = mp.Queue()
