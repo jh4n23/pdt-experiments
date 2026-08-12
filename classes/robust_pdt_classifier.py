@@ -19,11 +19,10 @@ class RobustPdtClassifier(PdtClassifier, RobustClassifier):
         y_train = torch.cat(y_batches).numpy()
 
         constraint_loss_fn = self.get_spec()["robust"]
-
         criterion = nn.CrossEntropyLoss()
 
         lam = None
-        for epoch in range(num_epochs):
+        for _ in range(num_epochs):
             for start in range(0, len(x_train), batch_size):
                 end = start + batch_size
                 x_batch = x_train[start:end]

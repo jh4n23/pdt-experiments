@@ -3,7 +3,7 @@
 #SBATCH --nodes=1 
 #SBATCH --partition=l4
 #SBATCH --job-name=TRAIN_CLASSIFIERS
-#SBATCH --time=02:30:00
+#SBATCH --time=05:30:00
 #SBATCH --cpus-per-task=12
 
 module load conda

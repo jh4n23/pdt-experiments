@@ -14,7 +14,7 @@ class BaseClassifier():
 
     def train(self, train_loader: DataLoader, num_epochs: int, batch_size: int):
         criterion = nn.CrossEntropyLoss()
-        for epoch in range(num_epochs):
+        for _ in range(num_epochs):
             for images, labels in train_loader:
                 self.optimizer.zero_grad()
                 logits = self.model(images)

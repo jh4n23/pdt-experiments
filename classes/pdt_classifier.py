@@ -6,10 +6,6 @@ from base_classifier import BaseClassifier
 from vehicle_lang.loss import pytorch as loss_pt
 from torch.utils.data import DataLoader
 
-"""
-Standard PDT!
-"""
-
 _MODULE_DIR = os.path.dirname(os.path.abspath(__file__))
 SPEC_PATH = os.path.join(_MODULE_DIR, "specs", "mnist-robustness.vcl")
 
@@ -47,7 +43,7 @@ class PdtClassifier(BaseClassifier):
         constraint_loss_fn = self.get_spec()["robust"]
 
         criterion = nn.CrossEntropyLoss()
-        for epoch in range(num_epochs):
+        for _ in range(num_epochs):
             lam = None
             for images, labels in train_loader:
                 self.optimizer.zero_grad()

@@ -41,16 +41,22 @@ def worker(cls_class, train_subset, test_data, num_epochs, batch_size, num_worke
 def main():
     BATCH_SIZE, SUBSET_SIZE = 64, 8192
     NUM_EPOCHS = 10
-    mnist_transform = transforms.Compose([
+    mnist_train_transform = transforms.Compose([
+        transforms.RandomRotation(10),
         transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081))
+        transforms.Normalize((0.1307,), (0.3081,))
+    ])
+
+    mnist_test_transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.1307,), (0.3081,))
     ])
 
     # set download=True if running for the first time
-    train_data = torchvision.datasets.MNIST(root="./data", train=True, download=False, transform=mnist_transform)
+    train_data = torchvision.datasets.MNIST(root="./data", train=True, download=False, transform=mnist_train_transform)
     train_subset = Subset(train_data, range(SUBSET_SIZE))
 
-    test_data = torchvision.datasets.MNIST(root="./data", train=False, download=False, transform=mnist_transform)
+    test_data = torchvision.datasets.MNIST(root="./data", train=False, download=False, transform=mnist_test_transform)
         
     classifier_classes = [BaseClassifier, RobustClassifier, PdtClassifier, RobustPdtClassifier]
     num_workers = len(classifier_classes)

@@ -32,7 +32,6 @@ class RobustClassifier(BaseClassifier):
         return x_shuffled, y_shuffled
 
     def train(self, train_loader: DataLoader, num_epochs: int, batch_size: int):
-
         x_batches, y_batches = [], []
         for images, labels in train_loader:
             x_batches.append(images)
@@ -51,7 +50,7 @@ class RobustClassifier(BaseClassifier):
             nb_classes=10
         )
 
-        for epoch in range(num_epochs):
+        for _ in range(num_epochs):
             for start in range (0, len(x_train), batch_size):
                 end = start + batch_size
                 x_batch = x_train[start:end]
