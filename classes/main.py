@@ -39,7 +39,7 @@ def worker(cls_class, train_subset, test_data, num_epochs, batch_size, num_worke
         result_queue.put((name, f" FAILED: {e}"))
 
 def main():
-    BATCH_SIZE, SUBSET_SIZE = 64, 8192
+    BATCH_SIZE, SUBSET_SIZE = 64, 4096
     NUM_EPOCHS = 10
     mnist_train_transform = transforms.Compose([
         transforms.RandomRotation(10),

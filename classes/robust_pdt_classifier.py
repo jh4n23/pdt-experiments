@@ -40,7 +40,7 @@ class RobustPdtClassifier(PdtClassifier, RobustClassifier):
                 constraint_loss = torch.stack(constraint_loss_fn(
                     n=images.shape[0],
                     classifier=self.network,
-                    epsilon=torch.tensor(0.005),
+                    epsilon=torch.tensor(0.1),
                     trainingImages=images.squeeze(1),
                     trainingLabels=labels,
                 )).mean()
