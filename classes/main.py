@@ -34,6 +34,7 @@ def worker(cls_class, train_subset, test_data, num_epochs, batch_size, num_worke
     try:
         cls.train(train_loader=train_loader, num_epochs=num_epochs, batch_size=batch_size)
         cls.evaluate(test_data=test_data)
+        cls.export(f"onnx_models/{cls_class.__name__}")
         result_queue.put((name, " OK"))
     except Exception as e:
         result_queue.put((name, f" FAILED: {e}"))

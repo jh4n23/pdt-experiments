@@ -44,3 +44,13 @@ class BaseClassifier():
               f"\n\tBenign accuracy: {accuracy * 100:.1f}%"
               f"\n\tConstraint security: {adv_accuracy * 100:.1f}%"
         )
+
+    def export(self, path):
+        input = torch.randn(1, 1, 28, 28)
+        torch.onnx.export(
+            self.model,
+            input,
+            path,
+            external_data=False
+        )
+        print(f"Saved {self.__class__.__name__} to {path}")
