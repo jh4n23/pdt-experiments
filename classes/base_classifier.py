@@ -9,7 +9,7 @@ from art.estimators.classification import PyTorchClassifier
 
 class BaseClassifier():
     def __init__(self):
-        self.model = CNN(in_channels=1, input_size=28, num_classes=10)
+        self.model = CNN()
         self.optimizer = optim.Adam(self.model.parameters(), lr=1e-3)
 
     def train(self, train_loader: DataLoader, num_epochs: int, batch_size: int):
@@ -51,6 +51,7 @@ class BaseClassifier():
             self.model,
             input,
             path,
-            external_data=False
+            external_data=False,
+            dynamo=False
         )
         print(f"Saved {self.__class__.__name__} to {path}")
