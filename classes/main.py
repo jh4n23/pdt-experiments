@@ -41,7 +41,7 @@ def worker(cls_class, train_subset, test_data, num_epochs, batch_size, num_worke
         result_queue.put((name, f" FAILED: {e}"))
 
 def main():
-    BATCH_SIZE, SUBSET_SIZE = 64, 1024
+    BATCH_SIZE, SUBSET_SIZE = 64, 4096
     NUM_EPOCHS = 10
     mnist_train_transform = transforms.Compose([
         transforms.RandomRotation(10),
@@ -60,7 +60,7 @@ def main():
 
     test_data = torchvision.datasets.MNIST(root="./data", train=False, download=False, transform=mnist_test_transform)
         
-    classifier_classes = [BaseClassifier, RobustClassifier, PdtClassifier, RobustPdtClassifier]
+    classifier_classes = [PdtClassifier]
     num_workers = len(classifier_classes)
 
     result_queue = mp.Queue()

@@ -53,7 +53,7 @@ class PdtClassifier(BaseClassifier):
                 constraint_loss = torch.stack(constraint_loss_fn(
                     n=images.shape[0],
                     classifier=self.network,
-                    epsilon=torch.tensor(0.1),
+                    epsilon=torch.tensor(0.1 / 0.3081),
                     trainingImages=images.squeeze(1),
                     trainingLabels=labels
                 )).mean()
