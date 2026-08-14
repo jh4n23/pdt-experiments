@@ -38,7 +38,7 @@ class BaseClassifier():
         preds = classifier.predict(x_test)
         accuracy = np.sum(np.argmax(preds, axis=1) == y_test) / len(y_test)
         tester = CsecTester(model=classifier)
-        adv_accuracy = tester.run(x_test, y_test, 0.1)
+        adv_accuracy = tester.run(x_test, y_test, (0.1 / 0.3081))
 
         print(f"{self.__class__.__name__}:"
               f"\n\tBenign accuracy: {accuracy * 100:.1f}%"

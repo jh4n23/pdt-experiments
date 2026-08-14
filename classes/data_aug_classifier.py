@@ -3,9 +3,9 @@ from torch.utils.data import DataLoader, TensorDataset
 from base_classifier import BaseClassifier
 from robust_classifier import RobustClassifier
 
-class DataAugClassifier(BaseClassifier, RobustClassifier):
+class DataAugClassifier(RobustClassifier, BaseClassifier):
     def __init__(self):
-        super().__init__()
+        RobustClassifier().__init__()
 
     def train(self, train_loader: DataLoader, num_epochs: int, batch_size: int):
         # initial training stage (3 epochs only) to determine model weights for PGD attack

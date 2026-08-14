@@ -17,7 +17,7 @@ class RobustClassifier(BaseClassifier):
             model=self.model, loss=criterion, optimizer=self.optimizer,
             input_shape=(1, 28, 28), nb_classes=10,
         )
-        return ProjectedGradientDescent(estimator=classifier, eps=(0.1 / 0.3081), eps_step=0.01, max_iter=10, verbose=False)
+        return ProjectedGradientDescent(estimator=classifier, eps=(0.1 / 0.3081), eps_step=(0.01 / 0.3081), max_iter=10, verbose=False)
 
     def generate_adv_examples(self, x_batch, y_batch):
         attack = self.build_attack()

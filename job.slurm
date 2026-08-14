@@ -2,7 +2,7 @@
 
 #SBATCH --nodes=1 
 #SBATCH --partition=l4
-#SBATCH --job-name=TRAIN_CLASSIFIERS
+#SBATCH --job-name=pdt_cls_4096_fixed_eps
 #SBATCH --time=05:30:00
 #SBATCH --cpus-per-task=12
 
