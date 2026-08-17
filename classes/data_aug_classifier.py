@@ -5,7 +5,7 @@ from robust_classifier import RobustClassifier
 
 class DataAugClassifier(RobustClassifier, BaseClassifier):
     def __init__(self):
-        RobustClassifier().__init__()
+        super().__init__()
 
     def train(self, train_loader: DataLoader, num_epochs: int, batch_size: int):
         # initial training stage (3 epochs only) to determine model weights for PGD attack

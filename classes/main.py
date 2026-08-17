@@ -9,6 +9,7 @@ from base_classifier import BaseClassifier
 from robust_classifier import RobustClassifier
 from pdt_classifier import PdtClassifier
 from robust_pdt_classifier import RobustPdtClassifier
+from data_aug_classifier import DataAugClassifier
 from torch.utils.data import DataLoader, Subset
 
 # get number of allocated CPUs if on HPC cluster,
@@ -58,7 +59,7 @@ def main():
 
     test_data = torchvision.datasets.MNIST(root="./data", train=False, download=False, transform=mnist_test_transform)
         
-    classifier_classes = [BaseClassifier, RobustClassifier, PdtClassifier, RobustPdtClassifier]
+    classifier_classes = [BaseClassifier, RobustClassifier, PdtClassifier, RobustPdtClassifier, DataAugClassifier]
     num_workers = len(classifier_classes)
 
     result_queue = mp.Queue()
