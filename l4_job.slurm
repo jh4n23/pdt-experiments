@@ -2,7 +2,7 @@
 
 #SBATCH --nodes=1 
 #SBATCH --partition=l4
-#SBATCH --job-name=pdt_cls_4096_fixed_eps
+#SBATCH --job-name=all_4096
 #SBATCH --time=05:30:00
 #SBATCH --cpus-per-task=12
 
