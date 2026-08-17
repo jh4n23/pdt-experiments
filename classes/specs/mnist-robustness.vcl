@@ -2,8 +2,16 @@ type Image = Tensor Real [28, 28]
 
 type Label = Index 10
 
+@parameter
+low : Real
+
+@parameter
+high : Real
+
+-- check image pixels are between lower and upper bounds
+-- pixel values may be normalised, so this is not necessarily as simple as low = 0 and high = 1
 validImage : Image -> Bool
-validImage x = forall i j . 0 <= x ! i ! j <= 1
+validImage x = forall i j . low <= x ! i ! j <= high
 
 @network
 classifier : Image -> Tensor Real [10]
@@ -58,19 +66,6 @@ qllAdditive =
   , reduceDisjunction          = \{dims} xs -> (1/p) * log(reduceAdd (exp (const (-p) dims * xs)))
   }
 
--- @property
--- robustToPerturbation : Bool
--- robustToPerturbation = 
---   -- Add a false dependency on the logic to avoid it being removed by monomorphisation.
---   -- Will fix in the next version of Vehicle.
---   if qllAdditive.trueElement > 0 
---     then False 
---     else advises perturbedImage (label ! 0)
-
 @property
 robust : Vector Bool n
 robust = foreach i . robustAround (trainingImages ! i) (trainingLabels ! i)
-
--- @property
--- scr : Vector Bool n
--- scr = foreach i . scrAround (trainingImages ! i) (trainingLabels ! i)

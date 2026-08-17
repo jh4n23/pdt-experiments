@@ -25,7 +25,7 @@ class PdtClassifier(BaseClassifier):
     def get_spec():
         return loss_pt.load_specification(
             SPEC_PATH,
-            logic=vcl.VehicleDifferentiableLogic()
+            logic=vcl.CustomDifferentiableLogic("qllAdditive")
         )
 
     def network(self, x: torch.Tensor) -> torch.Tensor:
@@ -55,7 +55,9 @@ class PdtClassifier(BaseClassifier):
                     epsilon=torch.tensor(0.1 / 0.3081),
                     trainingImages=images.squeeze(1),
                     trainingLabels=labels,
-                    p=torch.tensor(5)
+                    p=torch.tensor(5.0),
+                    low=torch.tensor(-0.4242),
+                    high=torch.tensor(2.8215)
                 )).mean()
 
                 if lam is None:
