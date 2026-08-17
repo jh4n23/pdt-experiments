@@ -17,7 +17,7 @@ class RobustClassifier(BaseClassifier):
             model=self.model, loss=criterion, optimizer=self.optimizer,
             input_shape=(1, 28, 28), nb_classes=10,
         )
-        return ProjectedGradientDescent(estimator=classifier, eps=0.1, eps_step=0.01, max_iter=10, verbose=False)
+        return ProjectedGradientDescent(estimator=classifier, eps=(0.1 / 0.3081), eps_step=(0.01 / 0.3081), max_iter=10, verbose=False)
 
     def generate_adv_examples(self, x_batch, y_batch):
         attack = self.build_attack()
@@ -32,7 +32,6 @@ class RobustClassifier(BaseClassifier):
         return x_shuffled, y_shuffled
 
     def train(self, train_loader: DataLoader, num_epochs: int, batch_size: int):
-
         x_batches, y_batches = [], []
         for images, labels in train_loader:
             x_batches.append(images)
@@ -51,7 +50,7 @@ class RobustClassifier(BaseClassifier):
             nb_classes=10
         )
 
-        for epoch in range(num_epochs):
+        for _ in range(num_epochs):
             for start in range (0, len(x_train), batch_size):
                 end = start + batch_size
                 x_batch = x_train[start:end]

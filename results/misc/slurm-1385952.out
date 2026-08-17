@@ -1,0 +1,40 @@
+Running SLURM prolog script on cotton01
+===============================================================================
+Job started on Thu Aug 13 16:39:27 BST 2026
+Job ID          : 1385952
+Job name        : TRAIN_CLASSIFIERS
+WorkDir         : /iridisfs/home/jh4n23/vehicle/pdt-experiments
+Command         : /iridisfs/home/jh4n23/vehicle/pdt-experiments/job.slurm
+Partition       : l4
+Num hosts       : 1
+Num cores       : 12
+Num of tasks    : 1
+Hosts allocated : cotton01
+Job Output Follows ...
+===============================================================================
+num_cpus: 12
+BaseClassifier:
+	Benign accuracy: 90.0%
+	Constraint security: 31.3%
+Saved BaseClassifier to onnx_models/BaseClassifier
+BaseClassifier:  OK
+==============================================================================
+Running epilogue script on cotton01.
+
+Submit time  : 2026-08-13T16:38:49
+Start time   : 2026-08-13T16:39:27
+End time     : 2026-08-13T16:41:16
+Elapsed time : 00:01:49 (Timelimit=05:30:00)
+
+Job ID: 1385952
+Cluster: iridis_x
+User/Group: jh4n23/fp
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 12
+CPU Utilized: 00:17:29
+CPU Efficiency: 80.20% of 00:21:48 core-walltime
+Job Wall-clock time: 00:01:49
+Memory Utilized: 1.65 GB
+Memory Efficiency: 0.97% of 169.92 GB (14.16 GB/core)
+

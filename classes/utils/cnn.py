@@ -3,29 +3,15 @@ import torch.nn as nn
 import torch.nn.functional as F
  
 class CNN(nn.Module):
-    """two strided 3x3 convs (4 and 8 channels respectively) + FC head -> 10 logits."""
  
-    def __init__(
-        self,
-        in_channels: int = 1,
-        input_size: int = 28,
-        num_classes: int = 10,
-        hidden_dim: int = 128,
-    ):
+    def __init__(self):
         super().__init__()
  
-        self.conv1 = nn.Conv2d(in_channels, 4, kernel_size=3, stride=2, padding=1)
+        self.conv1 = nn.Conv2d(1, 4, kernel_size=3, stride=2, padding=1)
         self.conv2 = nn.Conv2d(4, 8, kernel_size=3, stride=2, padding=1)
- 
-        def conv_out_size(size):
-            return (size + 2 * 1 - 3) // 2 + 1
- 
-        size_after_conv1 = conv_out_size(input_size)
-        size_after_conv2 = conv_out_size(size_after_conv1)
-        flat_dim = 8 * size_after_conv2 * size_after_conv2
- 
-        self.fc1 = nn.Linear(flat_dim, hidden_dim)
-        self.fc2 = nn.Linear(hidden_dim, num_classes)
+
+        self.fc1 = nn.Linear(8 * 7 * 7, 16)
+        self.fc2 = nn.Linear(16, 10)
  
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv1(x)

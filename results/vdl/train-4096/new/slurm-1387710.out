@@ -1,0 +1,51 @@
+Running SLURM prolog script on ruby056
+===============================================================================
+Job started on Fri Aug 14 14:14:28 BST 2026
+Job ID          : 1387710
+Job name        : all_cls_4096_fixed_eps
+WorkDir         : /iridisfs/home/jh4n23/vehicle/pdt-experiments
+Command         : /iridisfs/home/jh4n23/vehicle/pdt-experiments/job2.slurm
+Partition       : amd_student
+Num hosts       : 1
+Num cores       : 12
+Num of tasks    : 1
+Hosts allocated : ruby056
+Job Output Follows ...
+===============================================================================
+BaseClassifier:
+	Benign accuracy: 90.8%
+	Constraint security: 3.6%
+RobustClassifier:
+	Benign accuracy: 90.2%
+	Constraint security: 4.8%
+PdtClassifier:
+	Benign accuracy: 91.2%
+	Constraint security: 3.7%
+RobustPdtClassifier:
+	Benign accuracy: 90.1%
+	Constraint security: 3.6%
+DataAugClassifier:  FAILED: 'DataAugClassifier' object has no attribute 'optimizer'
+BaseClassifier:  OK
+RobustClassifier:  OK
+PdtClassifier:  OK
+RobustPdtClassifier:  OK
+==============================================================================
+Running epilogue script on ruby056.
+
+Submit time  : 2026-08-14T14:14:08
+Start time   : 2026-08-14T14:14:28
+End time     : 2026-08-14T19:09:10
+Elapsed time : 04:54:42 (Timelimit=05:30:00)
+
+Job ID: 1387710
+Cluster: iridis_x
+User/Group: jh4n23/fp
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 12
+CPU Utilized: 14:13:37
+CPU Efficiency: 24.14% of 2-10:56:24 core-walltime
+Job Wall-clock time: 04:54:42
+Memory Utilized: 5.41 GB
+Memory Efficiency: 12.31% of 43.95 GB (3.66 GB/core)
+

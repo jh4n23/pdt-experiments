@@ -1,0 +1,50 @@
+Running SLURM prolog script on cotton01
+===============================================================================
+Job started on Mon Aug 10 14:38:23 BST 2026
+Job ID          : 1371195
+Job name        : TRAIN_CLASSIFIERS
+WorkDir         : /iridisfs/home/jh4n23/vehicle/pdt-experiments
+Command         : /iridisfs/home/jh4n23/vehicle/pdt-experiments/job.slurm
+Partition       : l4
+Num hosts       : 1
+Num cores       : 12
+Num of tasks    : 1
+Hosts allocated : cotton01
+Job Output Follows ...
+===============================================================================
+BaseClassifier:
+	Benign accuracy: 93.4%
+	Constraint security: 72.3%
+RobustClassifier:
+	Benign accuracy: 93.8%
+	Constraint security: 91.0%
+PdtClassifier:
+	Benign accuracy: 92.8%
+	Constraint security: 70.5%
+RobustPdtClassifier:
+	Benign accuracy: 93.9%
+	Constraint security: 90.4%
+BaseClassifier:  OK
+RobustClassifier:  OK
+PdtClassifier:  OK
+RobustPdtClassifier:  OK
+==============================================================================
+Running epilogue script on cotton01.
+
+Submit time  : 2026-08-10T14:18:30
+Start time   : 2026-08-10T14:38:23
+End time     : 2026-08-10T16:48:05
+Elapsed time : 02:09:42 (Timelimit=02:30:00)
+
+Job ID: 1371195
+Cluster: iridis_x
+User/Group: jh4n23/fp
+State: COMPLETED (exit code 0)
+Nodes: 1
+Cores per node: 12
+CPU Utilized: 09:37:01
+CPU Efficiency: 37.07% of 1-01:56:24 core-walltime
+Job Wall-clock time: 02:09:42
+Memory Utilized: 5.59 GB
+Memory Efficiency: 3.29% of 169.92 GB (14.16 GB/core)
+
