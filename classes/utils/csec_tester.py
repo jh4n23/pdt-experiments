@@ -12,7 +12,7 @@ class CsecTester():
 
     def attack(self, x_test, epsilon):
         # divide epsilon by std to counteract effect of data normalization
-        attack = AutoProjectedGradientDescent(estimator=self.model, eps=(epsilon / 0.3081), verbose=False)
+        attack = AutoProjectedGradientDescent(estimator=self.model, eps=(epsilon / 0.3081), eps_step=(0.01 / 0.3081), verbose=False)
         adv_test = attack.generate(x=x_test)
         return self.model.predict(adv_test)
 
