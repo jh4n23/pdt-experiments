@@ -4,6 +4,7 @@ import torchvision
 import torchvision.transforms as transforms
 import os
 import multiprocessing as mp
+import traceback
 
 from base_classifier import BaseClassifier
 from robust_classifier import RobustClassifier
@@ -37,7 +38,7 @@ def worker(cls_class, train_subset, test_data, num_epochs, batch_size, num_worke
         cls.evaluate(test_data=test_data)
         result_queue.put((name, " OK"))
     except Exception as e:
-        result_queue.put((name, f" FAILED: {e}"))
+        result_queue.put((name, f" FAILED: {e}\n{traceback.print_exception(e)}"))
 
 def main():
     BATCH_SIZE, SUBSET_SIZE = 64, 4096
